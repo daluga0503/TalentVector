@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'TalentVector.app.users'
+    'TalentVector.app.users',
+    'TalentVector.app.jobs'
 ]
 
 MIDDLEWARE = [
