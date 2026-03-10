@@ -14,6 +14,10 @@ class User(AbstractUser):
     # python manage.py createsuperuser
     # REQUIRED_FIELDS = ['username', 'name', 'surname']
 
+    # IMPORTANTE: Django exige que el 'username' esté en REQUIRED_FIELDS
+    # si no es el USERNAME_FIELD, porque AbstractUser lo necesita para crear el objeto.
+    REQUIRED_FIELDS = ['username', 'name', 'surname']
+
     def __str__(self):
         return f'{self.name}, {self.surname}, {self.email}'
     

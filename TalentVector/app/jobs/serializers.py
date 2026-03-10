@@ -5,12 +5,12 @@ class JobOfferSerializer(serializers.Serializer):
     title = serializers.CharField()
     company = serializers.CharField()
     location = serializers.CharField(required=False, allow_blank=True)
-    salary = serializers.FloatField(required=False, allow_blank=True)
+    salary = serializers.FloatField(required=False, allow_null=True)
     description = serializers.CharField()
     url = serializers.CharField()
     skills = serializers.ListField(
-        chield = serializers.CharField(),
+        child = serializers.CharField(),
         required=False
     )
     seniority = serializers.CharField(required=False, allow_blank=True)
-    created_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)

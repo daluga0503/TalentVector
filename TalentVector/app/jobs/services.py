@@ -21,7 +21,7 @@ def list_job(filters=None):
 def get_job(job_id):
     return JobOffer.objects(id=job_id).first()
 
-def upadte_job(job_id, data):
+def update_job(job_id, data):
     job = get_job(job_id)
 
     if not job:
