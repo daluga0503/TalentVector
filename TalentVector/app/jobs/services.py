@@ -13,8 +13,8 @@ def list_job(filters=None):
             query = query.filter(location=filters['location'])
         if 'seniority' in filters:
             query = query.filter(seniority=filters['seniority'])
-        if 'skill' in filters:
-            query = query.filter(skilss=filters['skill'])
+        if 'skills' in filters:
+            query = query.filter(skills=filters['skills'])
     
     return query.order_by("-created_at")
 

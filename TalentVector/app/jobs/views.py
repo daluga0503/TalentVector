@@ -15,7 +15,7 @@ class JobListCreateView(APIView):
         filters = {
             'location': request.query_params.get('location'),
             'seniority': request.query_params.get('seniority'),
-            'skill': request.query_params.get('skill')
+            'skills': request.query_params.get('skill')
         }
 
         filters = {k:v for k,v in filters.items() if v}
@@ -53,9 +53,8 @@ class JobDetailView(APIView):
             return Response({'error':'not found'}, status=404)
         return Response(JobOfferSerializer(job).data)
     
-    def delete(self, request, job_id):
+    def delete(self, _, job_id):
         job = delete_job(job_id)
-        print(job)
         if job is None:
             return Response(
                 {'error': 'La oferta con ese ID no ha sido encontrada'},
