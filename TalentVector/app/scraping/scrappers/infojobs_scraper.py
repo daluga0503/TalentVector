@@ -1,13 +1,13 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import time
+from dotenv import load_dotenv
 
-class InfoJobsScraper: # Cambiado de LinkedinScraper a InfoJobs por coherencia
-    url_listado = "https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword=Desarrollador%2Fa%20de%20software&normalizedJobTitleIds=2512_f2b15a0e-e65a-438a-affb-29b9d50b77d1&searchByType=country&categoryIds=150&educationIds=125,60&segmentId=&page=1&sortBy=RELEVANCE&onlyForeignCountry=false&countryIds=17&sinceDate=_24_HOURS&experienceMin=_0_YEARS&experienceMax=_10_YEARS"
-
+class InfoJobsScraper:
+    url_listado = load_dotenv('URL_SCRAP')
 
     def fetch(self):
-        html_details = []
+        data_list = []
         with sync_playwright() as p:
             # Usamos launch_persistent_context para guardar cookies y parecer más humanos
             browser = p.chromium.launch(headless=False)
@@ -49,7 +49,10 @@ class InfoJobsScraper: # Cambiado de LinkedinScraper a InfoJobs por coherencia
                     # Si esto falla, sacamos captura para ver el error
                     try:
                         page.wait_for_selector('h1', timeout=10000) 
-                        html_details.append(page.content())
+                        data_list.append({
+                            'url': full_url,
+                            'html': page.content()
+                        })
                         print("✅ Página capturada con éxito")
                     except:
                         print(f"❌ Error visual en {full_url}. Guardando captura de pantalla...")
@@ -60,11 +63,13 @@ class InfoJobsScraper: # Cambiado de LinkedinScraper a InfoJobs por coherencia
                     print(f"Error crítico en {full_url}: {e}")
             
             browser.close()
-        return html_details
+        return data_list
 
-    def parse(self, html_list):
+    def parse(self, data_list):
         raw_jobs = []
-        for html in html_list:
+        for item in data_list:
+            url_oferta = item['url']
+            html = item['html']
             soup = BeautifulSoup(html, 'html.parser')
 
             # 1. Restringimos la búsqueda al contenedor específico
@@ -102,6 +107,7 @@ class InfoJobsScraper: # Cambiado de LinkedinScraper a InfoJobs por coherencia
             
             # Selectores actualizados para la página de DETALLE de InfoJobs
             job_data = {
+                'url' : url_oferta,
                 'title': self._safe_extract(soup, 'h1'),
                 'company': self._safe_extract(soup, 'a.ij-Link.ij-BaseTypography.ij-BaseTypography-primary.ij-Heading.ij-Heading-headline2'),
                 'location': location,
