@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('TalentVector.app.users.urls')),
     path('api/', include('TalentVector.app.jobs.urls')),
+    path('api/', include('TalentVector.app.scraping.urls'))
 ]
