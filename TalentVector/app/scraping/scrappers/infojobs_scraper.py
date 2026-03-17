@@ -1,10 +1,16 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import time
+import os
 from dotenv import load_dotenv
 
 class InfoJobsScraper:
-    url_listado = load_dotenv('URL_SCRAP')
+    url_listado = os.getenv('URL_SCRAP')
+    def __init__(self):
+        load_dotenv()
+        self.url_listado = os.getenv('URL_SCRAP')
+        if not self.url_listado:
+            raise ValueError('Error: No se encontró URL_SCRAP en el archivo de configuración.')
 
     def fetch(self):
         data_list = []
@@ -27,6 +33,7 @@ class InfoJobsScraper:
                 time.sleep(2)
             except:
                 print("Banner de cookies no detectado, continuando...")
+
 
             # Extraer URLs
             page.wait_for_selector('.ij-OfferCardContent-description-title', timeout=10000)
@@ -53,9 +60,7 @@ class InfoJobsScraper:
                             'url': full_url,
                             'html': page.content()
                         })
-                        print("✅ Página capturada con éxito")
                     except:
-                        print(f"❌ Error visual en {full_url}. Guardando captura de pantalla...")
                         page.screenshot(path=f"error_captura_{int(time.time())}.png")
                     
                     time.sleep(3) # Pausa más larga entre ofertas
@@ -84,8 +89,6 @@ class InfoJobsScraper:
 
             elementos_descripcion = soup.select('.ij-Box.mb-xl.mt-l')
 
-            print(num_elem)
-
             if num_elem == 5:
                 location = elementos_base[0].get_text()
                 movility = elementos_base[1].get_text()
@@ -113,10 +116,10 @@ class InfoJobsScraper:
                 'location': location,
                 'movility': movility,
                 'salary': salary,
-                'description': [elem.text for elem in elementos_descripcion],
+                'description': '\n'.join([elem.get_text() for elem in elementos_descripcion]),
                 'skills': [tag.text.strip() for tag in soup.select('a.sui-AtomTag-actionable.sui-AtomTag.sui-AtomTag--size-m.sui-AtomTag--design-outline.sui-AtomTag--color-primary.sui-AtomTag-hasIcon')],
                 'seniority': experience,
-                'contrato': contract
+                'type_contract': contract
             }
             raw_jobs.append(job_data)
         return raw_jobs
@@ -130,9 +133,9 @@ class InfoJobsScraper:
         return [job for job in raw_jobs]
 
     def scrape(self):
-        print("Iniciando captación de ofertas...")
+        # print("Iniciando captación de ofertas...")
         html_list = self.fetch()
-        print(f"Páginas descargadas: {len(html_list)}. Parseando...")
+        # print(f"Páginas descargadas: {len(html_list)}. Parseando...")
         raw_jobs = self.parse(html_list)
         normalized_jobs = self.normalize(raw_jobs)
             

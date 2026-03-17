@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from mongoengine import connect
-from dotenv import load_dotenv
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'TalentVector.app.users',
-    'TalentVector.app.jobs'
+    'TalentVector.app.jobs',
+    'TalentVector.app.scraping'
 ]
 
 MIDDLEWARE = [
@@ -88,12 +90,18 @@ DATABASES = {
     }
 }
 
-connect(
-    db=load_dotenv('MONGO_DB_NAME'),
-    username=load_dotenv('MONGO_USER'),
-    password=load_dotenv('MONGO_PASSWORD'),
-    host=load_dotenv('MONGO_HOST'),
-)
+
+try:
+    load_dotenv()
+    db_name=os.getenv('MONGO_DB_NAME')
+    db_username=os.getenv('MONGO_USER')
+    db_password=os.getenv('MONGO_PASSWORD')
+    db_host=os.getenv('MONGO_HOST')
+
+    atlas_uri = f'mongodb+srv://{db_username}:{db_password}@{db_host}/{db_name}?retryWrites=true&w=majority'
+    connect(host=atlas_uri)
+except Exception as e:
+    raise ConnectionAbortedError(f'Error al conectar con la bbdd mongo: {e}')
 
 
 # Password validation

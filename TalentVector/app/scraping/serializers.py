@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
 class ScrapingResultSerialzer(serializers.Serializer):
-    total_srapped = serializers.IntegerField()
+    total_scrapped = serializers.IntegerField()
     saved = serializers.IntegerField()
-    skiped =serializers.IntegerField()
+    skipped =serializers.IntegerField()

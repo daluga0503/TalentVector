@@ -1,4 +1,4 @@
-from app.jobs.models import JobOffer
+from TalentVector.app.jobs.models import JobOffer
 
 from .scrappers.infojobs_scraper import InfoJobsScraper
 
