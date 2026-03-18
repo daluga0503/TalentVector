@@ -15,7 +15,8 @@ class JobListCreateView(APIView):
         filters = {
             'location': request.query_params.get('location'),
             'seniority': request.query_params.get('seniority'),
-            'skills': request.query_params.get('skill')
+            'skills': request.query_params.get('skill'),
+            'company':request.query_params.get('company')
         }
 
         filters = {k:v for k,v in filters.items() if v}

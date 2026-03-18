@@ -4,6 +4,7 @@ class JobOfferSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
     title = serializers.CharField()
     company = serializers.CharField()
+    image = serializers.CharField()
     location = serializers.CharField(required=False, allow_blank=True)
     movility = serializers.CharField(required=False, allow_null=True)
     salary = serializers.CharField(required=False, allow_null=True)

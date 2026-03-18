@@ -106,6 +106,10 @@ class InfoJobsScraper:
                 salary = 'NO ENCONTRADO'
                 experience = 'NO ENCONTRADO'
                 contract = 'NO ENCONTRADO'
+
+            img_element = soup.select_one('img.sui-AtomImage-image')
+
+            logo_url = img_element['src'] if img_element and img_element.has_attr('src') else 'N/A'
             
             
             # Selectores actualizados para la página de DETALLE de InfoJobs
@@ -113,6 +117,7 @@ class InfoJobsScraper:
                 'url' : url_oferta,
                 'title': self._safe_extract(soup, 'h1'),
                 'company': self._safe_extract(soup, 'a.ij-Link.ij-BaseTypography.ij-BaseTypography-primary.ij-Heading.ij-Heading-headline2'),
+                'image': logo_url,
                 'location': location,
                 'movility': movility,
                 'salary': salary,

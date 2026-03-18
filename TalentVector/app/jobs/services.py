@@ -10,11 +10,13 @@ def list_job(filters=None):
 
     if filters:
         if 'location' in filters:
-            query = query.filter(location=filters['location'])
+            query = query.filter(location__icontains=filters['location'])
         if 'seniority' in filters:
-            query = query.filter(seniority=filters['seniority'])
+            query = query.filter(seniority__icontains=filters['seniority'])
         if 'skills' in filters:
-            query = query.filter(skills=filters['skills'])
+            query = query.filter(skills__icontains=filters['skills'])
+        if 'company' in filters:
+            query = query.filter(company__icontains=filters['company'])
     
     return query.order_by("-created_at")
 

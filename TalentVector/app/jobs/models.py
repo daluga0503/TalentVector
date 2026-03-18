@@ -12,6 +12,7 @@ from enum import Enum
 class JobOffer(Document):
     title = StringField(required=True)
     company = StringField(required=True)
+    image = StringField()
     location = StringField()
     movility = StringField() 
     salary = StringField()
