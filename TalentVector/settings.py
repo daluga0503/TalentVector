@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'TalentVector.app.users',
     'TalentVector.app.jobs',
-    'TalentVector.app.scraping'
+    'TalentVector.app.scraping',
+    'TalentVector.app.analytics'
 ]
 
 MIDDLEWARE = [
