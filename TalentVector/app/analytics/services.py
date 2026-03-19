@@ -1,4 +1,4 @@
-from app.jobs.models import JobOffer
+from TalentVector.app.jobs.models import JobOffer
 from collections import Counter
 
 def top_skills(limit=10):

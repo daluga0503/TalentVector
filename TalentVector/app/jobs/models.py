@@ -2,12 +2,12 @@ from mongoengine import Document, StringField, FloatField, ListField, DateTimeFi
 from datetime import datetime
 from enum import Enum
 
-# class Seniority(Enum):
-#    JUNIOR = 'junior'
-#    MID = 'mid'
-#    SENIOR = 'senior'
-#    ARCHITECTURE = 'architecture'
-#    LEAD = 'lead'
+class Seniority(Enum):
+    JUNIOR = 'junior'
+    MID = 'mid'
+    SENIOR = 'senior'
+    ARCHITECTURE = 'architecture'
+    OTRO = 'otro'
 
 class JobOffer(Document):
     title = StringField(required=True)
@@ -19,8 +19,8 @@ class JobOffer(Document):
     description = StringField()
     url = StringField(required=True, unique=True)
     skills = ListField(StringField())
-    seniority = StringField()
-    # seniority = StringField(choices = [(s.value, s.value) for s in Seniority], default=Seniority.JUNIOR.value)
+    experience_required = StringField()
+    seniority = StringField(choices = [(s.value, s.value) for s in Seniority], default=Seniority.JUNIOR.value)
     type_contract = StringField()
     created_at = DateTimeField(default=datetime.now())
 

@@ -123,7 +123,8 @@ class InfoJobsScraper:
                 'salary': salary,
                 'description': '\n'.join([elem.get_text() for elem in elementos_descripcion]),
                 'skills': [tag.text.strip() for tag in soup.select('a.sui-AtomTag-actionable.sui-AtomTag.sui-AtomTag--size-m.sui-AtomTag--design-outline.sui-AtomTag--color-primary.sui-AtomTag-hasIcon')],
-                'seniority': experience,
+                'experience_required': experience,
+                'seniority': None,
                 'type_contract': contract
             }
             raw_jobs.append(job_data)
@@ -134,8 +135,28 @@ class InfoJobsScraper:
         return element.get_text(strip=True) if element else "N/A"
 
     def normalize(self, raw_jobs):
-        # Aquí puedes limpiar los datos (quitar símbolos de moneda, normalizar fechas, etc.)
-        return [job for job in raw_jobs]
+        cadena_borrar = 'experiencia mínima: '
+        seniority_map = {
+            'junior': ['no requerida', 'al menos 1 año', 'al menos 2 años'],
+            'mid': ['al menos 3 años'],
+            'senior': ['al menos 4 años', 'al menos 5 años'],
+            'architecture': ['más de 5 años']
+        }
+        for job in raw_jobs:
+            raw_exp = job.get('experience_required', '').strip().lower()
+            clean_exp = raw_exp.replace(cadena_borrar, '').strip()
+            job['experience_required'] = clean_exp.capitalize()
+
+            found_seniority = 'otro'
+
+            for level, phrases in seniority_map.items():
+                if clean_exp in phrases:
+                    found_seniority = level
+                    break
+
+            job['seniority'] = found_seniority
+
+        return raw_jobs
 
     def scrape(self):
         # print("Iniciando captación de ofertas...")

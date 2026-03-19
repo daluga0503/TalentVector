@@ -14,6 +14,7 @@ class JobOfferSerializer(serializers.Serializer):
         child = serializers.CharField(),
         required=False
     )
+    experience_required = serializers.CharField(required=False, allow_blank=True)
     seniority = serializers.CharField(required=False, allow_blank=True)
     type_contract = serializers.CharField(required=False)
     created_at = serializers.DateTimeField(read_only=True)
