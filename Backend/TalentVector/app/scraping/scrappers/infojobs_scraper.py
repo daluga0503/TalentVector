@@ -96,6 +96,7 @@ class InfoJobsScraper:
                 experience = elementos_base[3].get_text()
                 contract = elementos_base[4].get_text()
             elif num_elem == 4:
+                movility = 'NO ENCONTRADO'
                 location = elementos_base[0].get_text()
                 salary = elementos_base[1].get_text()
                 experience = elementos_base[2].get_text()
