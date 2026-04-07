@@ -35,7 +35,6 @@ def show_login_page():
     # Contenedor principal centrado
     st.markdown("<h1 class='login-header'>🚀 TalentVector</h1>", unsafe_allow_html=True)
     
-    # Creamos tres columnas para centrar el formulario (proporción 1:2:1)
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
@@ -49,10 +48,10 @@ def show_login_page():
             
             if st.button("Login"):
                 if email and password:
-                    # --- CONEXIÓN CON TU API DJANGO ---
+                    
                     try:
                         with st.spinner('Autenticando...'):
-                            # Cambia esta URL por la de tu API real
+                            
                             api_url = "http://127.0.0.1:8000/api/auth/login/"
                             response = requests.post(api_url, json={
                                 "email": email,
@@ -75,6 +74,6 @@ def show_login_page():
                 else:
                     st.toast("Por favor, rellena todos los campos.")
 
-            st.write("") # Espaciado
+            st.write("")
             if st.button("¿No tienes cuenta? Regístrate", key="btn_reg"):
                 st.session_state['page'] = 'register'
