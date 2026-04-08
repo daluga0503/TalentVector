@@ -1,7 +1,7 @@
 import streamlit as st
 from login import show_login_page
 from register import show_register_page
-from jobs import show_job_page
+from jobs import show_jobs_page
 # 1. CONFIGURACIÓN INICIAL
 st.set_page_config(page_title="TalentVector", page_icon="💼", layout="centered")
 

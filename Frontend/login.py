@@ -1,8 +1,6 @@
 import streamlit as st
 import requests
-from utils import (
-    redireccion_pagina
-)
+
 
 def show_login_page():
     st.markdown("""
@@ -66,6 +64,8 @@ def show_login_page():
                             
                             st.success("¡Bienvenido!")
                             # Aquí podrías usar st.rerun() para ir a la página principal
+                            st.session_state['page'] = 'jobs'
+                            st.rerun()
                         else:
                             st.toast("Credenciales incorrectas. Inténtalo de nuevo.")
                             
@@ -77,3 +77,4 @@ def show_login_page():
             st.write("")
             if st.button("¿No tienes cuenta? Regístrate", key="btn_reg"):
                 st.session_state['page'] = 'register'
+                st.rerun()
