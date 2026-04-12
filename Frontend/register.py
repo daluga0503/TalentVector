@@ -1,5 +1,10 @@
 import streamlit as st
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+url_register= os.getenv('URL_REGISTER')
 
 def show_register_page():
     st.markdown("""
@@ -58,9 +63,7 @@ def show_register_page():
                         # --- CONEXIÓN CON TU API DJANGO ---
                         try:
                             with st.spinner('Autenticando...'):
-                                        # Cambia esta URL por la de tu API real
-                                api_url = "http://127.0.0.1:8000/api/auth/register/"
-                                response = requests.post(api_url, json={
+                                response = requests.post(url_register, json={
                                     "email": email,
                                     "username": username,
                                     "name": name,

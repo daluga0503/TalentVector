@@ -36,3 +36,9 @@ class CustomTokenSerializer(TokenObtainPairSerializer):
         token['surname'] = user.surname
 
         return token
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'surname', 'username', 'date_joined', 'is_staff']
+        read_only_fields = ['date_joined', 'is_staff']

@@ -4,15 +4,11 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from .services import get_all_users
-
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-from .serializers import RegisterSerializer, CustomTokenSerializer, UserListSerializer
+from .serializers import RegisterSerializer, CustomTokenSerializer, UserListSerializer, UserProfileSerializer
 
 User = get_user_model()
-
 # Es el controller en Java
 
 class UserListView(APIView):
@@ -55,14 +51,10 @@ class RegisterView(APIView):
 class ProfileView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    
     def get(self, request):
-        user = request.user
-        return Response({
-            'email': user.email,
-            'name': user.name,
-            'surname': user.surname,
-            'username': user.username
-        })
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CustomTokenView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer

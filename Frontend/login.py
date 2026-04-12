@@ -1,5 +1,11 @@
 import streamlit as st
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+url_login= os.getenv('URL_LOGIN')
+
 
 
 def show_login_page():
@@ -49,9 +55,7 @@ def show_login_page():
                     
                     try:
                         with st.spinner('Autenticando...'):
-                            
-                            api_url = "http://127.0.0.1:8000/api/auth/login/"
-                            response = requests.post(api_url, json={
+                            response = requests.post(url_login, json={
                                 "email": email,
                                 "password": password
                             })
