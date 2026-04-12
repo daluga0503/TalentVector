@@ -15,7 +15,14 @@ if "page" not in st.session_state:
 
 # 3. Navegación dinámica
 if not st.session_state["logged_in"]:
-    # Si no está logueaod, mostrar login o registro
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] {
+                display: none;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+    # Si no está logueado, mostrar login o registro
     if st.session_state["page"] == "login":
         show_login_page()
     else:

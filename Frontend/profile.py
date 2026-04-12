@@ -7,6 +7,12 @@ import os
 load_dotenv()
 url_get_user_profile= os.getenv('URL_GET_USER_PROFILE')
 
+def logout():
+    st.session_state["access"] = None
+    st.session_state["logged_in"] = False
+    st.session_state["page"] = "login"
+    st.rerun()
+
 
 
 def show_profile_page():
@@ -38,6 +44,8 @@ def show_profile_page():
                     </div>
                 """, unsafe_allow_html=True)
                 st.write("")
+                if st.button('Cerrar Sesión', type='primary'):
+                    logout()
             with col2:
                 with st.container(border=True):
                     st.markdown("### Información Personal")
