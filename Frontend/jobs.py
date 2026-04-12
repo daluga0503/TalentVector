@@ -102,14 +102,14 @@ def show_full_details(job):
     st.markdown("---")
     st.markdown(f"**Experiencia Requerida:**\n\n{job.get('experience_required', 'N/A')}")
     st.markdown("---")
-    st.markdown(f"**Perfil:**\n\n{job.get('seniority', 'N/A')}")
+    st.markdown(f"**Perfil:**\n\n{job.get('seniority', 'N/A').capitalize()}")
     st.markdown("---")
     st.markdown(f"**Tipo de Contrato:**\n\n{job.get('type_contract', 'N/A')}")
     st.markdown("---")
     st.markdown(f"**Enlace oferta:**\n\n{job.get('url', 'N/A')}")
 
     if st.button("Cerrar"):
-        st.dialog_close()
+        st.rerun()
 
 
 
