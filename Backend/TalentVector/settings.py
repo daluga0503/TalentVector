@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'TalentVector.app.users',
     'TalentVector.app.jobs',
     'TalentVector.app.scraping',
-    'TalentVector.app.analytics'
+    'TalentVector.app.analytics',
+    'TalentVector.app.favsjobs'
 ]
 
 MIDDLEWARE = [

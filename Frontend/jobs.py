@@ -5,6 +5,9 @@ import os
 
 url_get_default_jobs = os.getenv('URL_GET_DEFAULT_JOBS')
 
+def save_to_favorites(job_id):
+    st.toast("Guardando en favoritos...")
+
 def get_jobs(ruta):
     token = st.session_state.get('access')
     
@@ -82,11 +85,17 @@ def card_job(job):
         """,
         unsafe_allow_html=True
     )
-    if st.button("Ver detalles", key=f"btn_{job_id}", use_container_width=True):
-        show_full_details(job)
-    else:
-        st.write("")
-    
+    container = st.container()
+    col1, col2, col3, col4 = container.columns([0.35, 1, 1, 0.25])
+    with col2:
+        es_fav = st.toggle(f"¿Favorito?", key=f"fav_{job_id}", value=False)
+        if es_fav:
+            save_to_favorites(job_id)
+    with col3:
+        if st.button("Ver detalles", key=f"btn_{job_id}"):
+            show_full_details(job)
+        else:
+            st.write("")
 
 @st.dialog("Detalle de la oferta")
 def show_full_details(job):

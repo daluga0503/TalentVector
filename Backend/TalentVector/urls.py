@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/', include('TalentVector.app.users.urls')),
     path('api/', include('TalentVector.app.jobs.urls')),
     path('api/', include('TalentVector.app.scraping.urls')),
-    path('api/', include('TalentVector.app.analytics.urls'))
+    path('api/', include('TalentVector.app.analytics.urls')),
+    path('api/', include('TalentVector.app.favsjobs.urls'))
 ]
