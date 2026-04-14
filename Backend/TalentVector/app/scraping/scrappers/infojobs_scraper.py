@@ -160,9 +160,7 @@ class InfoJobsScraper:
         return raw_jobs
 
     def scrape(self):
-        # print("Iniciando captación de ofertas...")
         html_list = self.fetch()
-        # print(f"Páginas descargadas: {len(html_list)}. Parseando...")
         raw_jobs = self.parse(html_list)
         normalized_jobs = self.normalize(raw_jobs)
             
