@@ -1,4 +1,4 @@
-from models import FavsJobs
+
 from .services import create_favjob, delete_favjob, list_favjobs
 from rest_framework import serializers
 

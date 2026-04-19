@@ -1,29 +1,26 @@
-from rest_framework_permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import FavsJobsSerializer
+from .models import FavsJobs
 
 # Create your views here.
 class FavsJobsView(APIView):
     permissions_classes = [IsAuthenticated]
 
-    def post_fav(self, request):
-        fav = FavsJobsSerializer.create(data=request.data)
-        if fav:
-            return Response(fav, status=201)
-        else:
-            return Response({'error': 'Failed to create fav'}, status=400)
+    def get(self, request):
+        favs = FavsJobs.objects.filter(user = request.user).values_list('job_id', flat=True)
+        return Response(list(favs), status=200)
 
-    def delete_fav(self, request):
-        fav = FavsJobsSerializer.delete(data=request.data)
-        if fav:
-            return Response({'message': 'Fav deleted successfully'}, status=200)
-        else:
-            return Response({'error': 'Fav not found'}, status=404)
-    
-    def get_favs_by_user_id(self, request):
-        favs = FavsJobsSerializer.get_favs_by_user_id(data=request.data)
-        if favs:
-            return Response(favs, status=200)
-        else:
-            return Response({'error': 'No favs found for the user'}, status=404)
+    def post(self, request):
+        job_id = request.data.get('job_id')
+        fav, created = FavsJobs.objects.get_or_create(user=request.user, job_id=job_id)
+        if created:
+            return Response({'message':'Añadido'}, status=201)
+        return Response({'message': 'Ya existía'}, status=200)
+
+    def delete(self, request):
+        job_id = request.data.get('job_id')
+        deleted, _ = FavsJobs.objects.filter(user=request.user, job_id=job_id).delete()
+        if deleted:
+            return Response({'message': 'Eliminado'}, status=200)
+        return Response({'error': 'No encontrado'}, status=404)
