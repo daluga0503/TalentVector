@@ -1,6 +1,5 @@
 import streamlit as st
-from .services.auth_service import login_user
-
+from services.auth_service import login_user
 
 
 def show_login_page():
@@ -53,6 +52,7 @@ def show_login_page():
                             response = login_user(email, password)
                         if response.status_code == 200:
                             data = response.json()
+                            st.session_state.clear()
                             # Guardamos los tokens en la sesión de Streamlit
                             st.session_state['access'] = data['access']
                             st.session_state['logged_in'] = True

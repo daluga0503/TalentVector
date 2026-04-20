@@ -1,14 +1,32 @@
 import streamlit as st
-from .services.jobs_service import get_jobs, URL_JOBS
+from services.jobs_service import get_jobs, URL_JOBS
+from services.favjobs_service import get_fav_jobs, add_job_to_fav, remove_job_from_fav
 
-token = st.session_state.get('access')
 
-def save_to_favorites(job_id):
-    st.toast("Guardando en favoritos...")
-
+def handle_fav_toggle(job_id, token):
+    """
+    Esta función se ejecuta cuando el usuario toca el toggle.
+    Gestiona la API y actualiza el estado sin necesidad de rerun manual.
+    """
+    # El valor actual del toggle se recupera del session_state usando su key
+    is_now_fav = st.session_state[f"fav_{job_id}"]
+    
+    if is_now_fav:
+        if add_job_to_fav(token, job_id):
+            st.session_state['fav_ids'].append(job_id)
+            st.toast(f"Añadido a favoritos ❤️")
+        else:
+            st.error("Error al añadir a favoritos")
+    else:
+        if remove_job_from_fav(token, job_id):
+            if job_id in st.session_state['fav_ids']:
+                st.session_state['fav_ids'].remove(job_id)
+            st.toast(f"Eliminado de favoritos 🗑️")
+        else:
+            st.error("Error al eliminar de favoritos")
 
 def card_job(job):
-    job_id = job.get('id', '')
+    job_id = str(job.get('id', ''))
     img = job.get('image', '')
     title = job.get('title', '')
     company = job.get('company', '')
@@ -27,7 +45,7 @@ def card_job(job):
             font-family: 'Open Sans', sans-serif;
             margin-bottom: 12px;
             max-width: 725px;
-            postion: relative;
+            position: relative;
         ">
             <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                 <div style="
@@ -60,17 +78,24 @@ def card_job(job):
         """,
         unsafe_allow_html=True
     )
-    container = st.container()
-    col1, col2, col3, col4 = container.columns([0.35, 1, 1, 0.25])
+
+    ya_es_fav = job_id in st.session_state.get('fav_ids', [])
+    
+    col1, col2, col3, col4 = st.columns([0.35, 1, 1, 0.25])
+    
     with col2:
-        es_fav = st.toggle(f"¿Favorito?", key=f"fav_{job_id}", value=False)
-        if es_fav:
-            save_to_favorites(job_id)
+        # Usamos on_change para ejecutar la lógica de la API
+        st.toggle(
+            "¿Favorito?", 
+            key=f"fav_{job_id}", 
+            value=ya_es_fav,
+            on_change=handle_fav_toggle,
+            args=(job_id, st.session_state.get('access'))
+        )
+
     with col3:
         if st.button("Ver detalles", key=f"btn_{job_id}"):
             show_full_details(job)
-        else:
-            st.write("")
 
 @st.dialog("Detalle de la oferta")
 def show_full_details(job):
@@ -96,7 +121,6 @@ def show_full_details(job):
         st.rerun()
 
 
-
 def container_jobs(jobs):
     if not jobs:
         st.info("No se encontraron ofertas.")
@@ -116,10 +140,16 @@ def container_jobs(jobs):
                     card_job(jobs[i+1])
 
 def show_jobs_page():
-    ruta = URL_JOBS
+    token = st.session_state.get('access')
     
+    # 1. Cargar favoritos una sola vez (Estado Inicial)
+    if 'fav_ids' not in st.session_state:
+        with st.spinner("Sincronizando favoritos..."):
+            st.session_state['fav_ids'] = get_fav_jobs(token)
+    
+    # --- FILTROS ---
     st.markdown("### 🔍 Filtrar ofertas")
-    col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 1]) # Ajustamos anchos
+    col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 1])
 
     with col1:
         location = st.text_input('Ubicación', placeholder="Ej: Madrid")
@@ -129,23 +159,22 @@ def show_jobs_page():
         company = st.text_input('Empresa', placeholder="Ej: Sopra")
     with col4:
         seniority = st.selectbox('Experiencia', ['Cualquiera', 'Junior', 'Mid', 'Senior', 'Architecture'])
+    
     with col5:
         st.write(" ")
         st.write(" ") 
         btn_filter = st.button('Filtrar', use_container_width=True)
 
+    # Lógica de ruta para filtros
     params = []
     if location: params.append(f"location={location}")
     if skill: params.append(f"skills={skill}")
     if company: params.append(f"company={company}")
     if seniority != 'Cualquiera': params.append(f"seniority={seniority}")
     
-    if params and btn_filter:
-        ruta = f"{URL_JOBS}?{'&'.join(params)}"
-    else:
-        ruta = URL_JOBS
+    ruta = f"{URL_JOBS}?{'&'.join(params)}" if params and btn_filter else URL_JOBS
 
-    st.markdown("---") # Línea divisoria
+    st.markdown("---") 
     
     with st.spinner('Cargando ofertas...'):
         jobs = get_jobs(token, ruta)
@@ -154,6 +183,4 @@ def show_jobs_page():
         st.write(f"Se han encontrado **{len(jobs)}** ofertas.")
         container_jobs(jobs)
     else:
-        st.info("No hay ofertas disponibles para estos criterios.")
-
-    
+        st.info("No hay ofertas disponibles.")

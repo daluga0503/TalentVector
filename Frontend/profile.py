@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from .services.auth_service import logout, get_user_profile
+from services.auth_service import logout, get_user_profile
 
 def show_profile_page():
     st.subheader("Información Personal")

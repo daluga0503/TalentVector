@@ -1,5 +1,5 @@
 import streamlit as st
-from .services.auth_service import register_user
+from services.auth_service import register_user
 
 def show_register_page():
     st.markdown("""

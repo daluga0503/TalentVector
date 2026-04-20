@@ -29,6 +29,8 @@ def get_user_profile(token):
     return response
 
 def logout():
+    st.session_state.clear()
+    
     st.session_state["access"] = None
     st.session_state["logged_in"] = False
     st.session_state["page"] = "login"
