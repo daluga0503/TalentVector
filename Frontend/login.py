@@ -1,10 +1,5 @@
 import streamlit as st
-import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-url_login= os.getenv('URL_LOGIN')
+from .services.auth_service import login_user
 
 
 
@@ -55,11 +50,7 @@ def show_login_page():
                     
                     try:
                         with st.spinner('Autenticando...'):
-                            response = requests.post(url_login, json={
-                                "email": email,
-                                "password": password
-                            })
-                        
+                            response = login_user(email, password)
                         if response.status_code == 200:
                             data = response.json()
                             # Guardamos los tokens en la sesión de Streamlit

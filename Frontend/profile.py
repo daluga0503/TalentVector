@@ -1,19 +1,6 @@
 import streamlit as st
-import requests
 from datetime import datetime
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-url_get_user_profile= os.getenv('URL_GET_USER_PROFILE')
-
-def logout():
-    st.session_state["access"] = None
-    st.session_state["logged_in"] = False
-    st.session_state["page"] = "login"
-    st.rerun()
-
-
+from .services.auth_service import logout, get_user_profile
 
 def show_profile_page():
     st.subheader("Información Personal")
@@ -27,8 +14,7 @@ def show_profile_page():
         st.rerun()
 
     try:
-        headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(url_get_user_profile, headers=headers)
+        response = get_user_profile(token)
 
         if response.status_code == 200:
             user_data = response.json()

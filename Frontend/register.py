@@ -1,10 +1,5 @@
 import streamlit as st
-import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-url_register= os.getenv('URL_REGISTER')
+from .services.auth_service import register_user
 
 def show_register_page():
     st.markdown("""
@@ -63,14 +58,7 @@ def show_register_page():
                         # --- CONEXIÓN CON TU API DJANGO ---
                         try:
                             with st.spinner('Autenticando...'):
-                                response = requests.post(url_register, json={
-                                    "email": email,
-                                    "username": username,
-                                    "name": name,
-                                    "surname": surname,
-                                    "password": password
-                                })
-                                    
+                                response = register_user(email, username, name, surname, password)
                             if response.status_code == 201:
                                 st.success("¡Registro completado exitosamente!")
                                 st.session_state['page'] = 'login'

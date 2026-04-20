@@ -1,36 +1,11 @@
 import streamlit as st
-import requests
-from dotenv import load_dotenv
-import os
+from .services.jobs_service import get_jobs, URL_JOBS
 
-url_get_default_jobs = os.getenv('URL_GET_DEFAULT_JOBS')
+token = st.session_state.get('access')
 
 def save_to_favorites(job_id):
     st.toast("Guardando en favoritos...")
 
-def get_jobs(ruta):
-    token = st.session_state.get('access')
-    
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
-    response = requests.get(ruta, headers=headers)
-    if response.status_code == 200:
-        try:
-            data = response.json()
-            if isinstance(data, list):
-                return data
-            else:
-                st.error("Error: La respuesta no es una lista de trabajos.")
-                return []
-        except ValueError:
-            st.error("Error: No se pudo parsear la respuesta JSON.")
-            return []
-    else:
-        st.error(f"Error al obtener trabajos: {response.status_code}")
-        return []
 
 def card_job(job):
     job_id = job.get('id', '')
@@ -141,7 +116,7 @@ def container_jobs(jobs):
                     card_job(jobs[i+1])
 
 def show_jobs_page():
-    ruta = url_get_default_jobs
+    ruta = URL_JOBS
     
     st.markdown("### 🔍 Filtrar ofertas")
     col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 1]) # Ajustamos anchos
@@ -166,14 +141,14 @@ def show_jobs_page():
     if seniority != 'Cualquiera': params.append(f"seniority={seniority}")
     
     if params and btn_filter:
-        ruta = f"{url_get_default_jobs}?{'&'.join(params)}"
+        ruta = f"{URL_JOBS}?{'&'.join(params)}"
     else:
-        ruta = url_get_default_jobs
+        ruta = URL_JOBS
 
     st.markdown("---") # Línea divisoria
     
     with st.spinner('Cargando ofertas...'):
-        jobs = get_jobs(ruta)
+        jobs = get_jobs(token, ruta)
         
     if jobs:
         st.write(f"Se han encontrado **{len(jobs)}** ofertas.")
