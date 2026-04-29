@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import os
 from dotenv import load_dotenv
+import re
 
 class InfoJobsScraper:
     url_listado = os.getenv('URL_SCRAP')
@@ -136,20 +137,44 @@ class InfoJobsScraper:
         return element.get_text(strip=True) if element else "N/A"
 
     def normalize(self, raw_jobs):
-        cadena_borrar = 'experiencia mínima: '
+        cadena__borrar_movilidad = 'solo '
+        cadena_borrar_experiencia = 'experiencia mínima: '
         seniority_map = {
             'junior': ['no requerida', 'al menos 1 año', 'al menos 2 años'],
             'mid': ['al menos 3 años'],
             'senior': ['al menos 4 años', 'al menos 5 años'],
             'architecture': ['más de 5 años']
         }
+
         for job in raw_jobs:
             raw_exp = job.get('experience_required', '').strip().lower()
-            clean_exp = raw_exp.replace(cadena_borrar, '').strip()
-            job['experience_required'] = clean_exp.capitalize()
+            clean_exp = raw_exp.replace(cadena_borrar_experiencia, '').strip().lower()
+            raw_movility = job.get('movility', '').strip().lower()
+            clean_movility = raw_movility.replace(cadena__borrar_movilidad, '').strip().lower()
+            job['experience_required'] = clean_exp.lower()
+            job['movility'] = clean_movility.lower()
+
+            salary_raw = job.get('salary', '').strip().lower()
+            if 'no disponible' in salary_raw or not salary_raw:
+                job['salary'] = None  # Es mejor usar None que 'N/A' para que Pandas lo entienda como vacío
+            else:
+                # 1. Limpiamos puntos y símbolos para dejar solo números y guiones
+                # "17.000€ - 20.000€" -> "17000 - 20000"
+                clean_str = salary_raw.replace('.', '').replace('€', '').strip()
+                
+                # 2. Buscamos el primer bloque de números
+                match = re.search(r'\d+', clean_str)
+                
+                if match:
+                    try:
+                        # Convertimos el primer número encontrado (ej: 17000)
+                        job['salary'] = float(match.group())
+                    except ValueError:
+                        job['salary'] = None
+                else:
+                    job['salary'] = None
 
             found_seniority = 'otro'
-
             for level, phrases in seniority_map.items():
                 if clean_exp in phrases:
                     found_seniority = level

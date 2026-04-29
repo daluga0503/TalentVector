@@ -15,7 +15,7 @@ class JobOffer(Document):
     image = StringField()
     location = StringField()
     movility = StringField() 
-    salary = StringField()
+    salary = FloatField()
     description = StringField()
     url = StringField(required=True, unique=True)
     skills = ListField(StringField())
