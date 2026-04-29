@@ -9,8 +9,10 @@
 #beautifulsoup4==4.13.3
 #streamlit==1.55.0
 #requests==2.33.0
+#ollama
+#pandas
+#plotly
 
 # Por instalar
-ollama
 
 
