@@ -12,6 +12,7 @@
 #ollama
 #pandas
 #plotly
+#groq
 
 # Por instalar
 

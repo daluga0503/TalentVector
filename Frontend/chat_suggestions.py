@@ -2,8 +2,15 @@ import streamlit as st
 from chatbot.model import Model
 from dotenv import load_dotenv
 import os
+from groq import Groq
 
 load_dotenv()
+
+client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+
+st.session_state.messages = [
+    {"role": "system", "content": "Eres un reclutador IT especializado en optimizar perfiles técnicos y preparar a candidatos para entrevistas. Proporciona consejos prácticos, sugerencias de habilidades y estrategias para destacar en el mercado laboral tecnológico."}
+]
 
 @st.cache_resource
 def get_model():
@@ -36,9 +43,14 @@ with st.form(key="chat_form"):
 if submit_button:
     if user_input != "":
         with st.spinner("Generando respuesta..."):
-            model = get_model()
-            response = model.generate(prompt=user_input.strip())
-            st.session_state.response = response
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages + [{"role": "user", "content": user_input}]],
+            )
+
+            answer = completion.choices[0].message.content
+            st.session_state.response = answer
+            st.session_state.messages.append({"role": "assistant", "content": answer})
     else:
         st.error("Por favor, completa todos los campos antes de enviar el mensaje.")
 
