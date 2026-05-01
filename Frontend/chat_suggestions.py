@@ -1,5 +1,4 @@
 import streamlit as st
-from chatbot.model import Model
 from dotenv import load_dotenv
 import os
 from groq import Groq
@@ -11,10 +10,6 @@ client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 st.session_state.messages = [
     {"role": "system", "content": "Eres un reclutador IT especializado en optimizar perfiles técnicos y preparar a candidatos para entrevistas. Proporciona consejos prácticos, sugerencias de habilidades y estrategias para destacar en el mercado laboral tecnológico."}
 ]
-
-@st.cache_resource
-def get_model():
-    return Model('it-recruiter', os.getenv('URL_OLLAMA'))
 
 # Inicialización del estado de la sesión para almacenar la respuesta del modelo
 if 'response' not in st.session_state:
