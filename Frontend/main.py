@@ -30,8 +30,7 @@ if not st.session_state["logged_in"]:
 else:
     pages = {
         "Trabajos": [
-            st.Page(show_jobs_page, title="Ofertas de trabajo", icon="💼"),
-            st.Page("my_offers.py", title="Mis ofertas", icon="📋")
+            st.Page(show_jobs_page, title="Ofertas de trabajo", icon="💼")       
         ],
         "Búsqueda Asistida":[
             st.Page("rag_jobs.py", title="Búsqueda Vectorial", icon="🔍"),

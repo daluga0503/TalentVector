@@ -1,11 +1,8 @@
 import streamlit as st
-from dotenv import load_dotenv
-import os
 from groq import Groq
+from ...utils import load_config
 
-load_dotenv()
-
-client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+client = Groq(api_key=load_config()['GROQ_API_KEY'])
 
 st.session_state.messages = [
     {"role": "system", "content": "Eres un reclutador IT especializado en optimizar perfiles técnicos y preparar a candidatos para entrevistas. Proporciona consejos prácticos, sugerencias de habilidades y estrategias para destacar en el mercado laboral tecnológico."}

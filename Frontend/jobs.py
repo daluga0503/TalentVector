@@ -1,5 +1,5 @@
 import streamlit as st
-from services.jobs_service import get_jobs, URL_JOBS
+from services.jobs_service import get_jobs, url_jobs
 from services.favjobs_service import get_fav_jobs, add_job_to_fav, remove_job_from_fav
 
 

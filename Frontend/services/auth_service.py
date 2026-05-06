@@ -1,10 +1,8 @@
 import requests
-from dotenv import load_dotenv
-import os
 import streamlit as st
+from ...utils import load_config
 
-load_dotenv()
-url_auth= os.getenv('URL_AUTH')
+url_auth= load_config()['URL_AUTH']
 
 def login_user(email, password):
     response = requests.post(url_auth + "login/", json={
