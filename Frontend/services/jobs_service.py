@@ -7,22 +7,16 @@ def get_jobs(token, ruta):
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
-
-    response = requests.get(ruta, headers=headers)
-    if response.status_code == 200:
-        try:
+    try:
+        response = requests.get(ruta, headers=headers)
+        if response.status_code == 200:
             data = response.json()
-            if isinstance(data, list):
-                return data
-            else:
-                st.error("Error: La respuesta no es una lista de trabajos.")
-                return []
-        except ValueError:
-            st.error("Error: No se pudo parsear la respuesta JSON.")
+            return data if isinstance(data, list) else []
+        else:
             return []
-    else:
-        st.error(f"Error al obtener trabajos: {response.status_code}")
-        return []
+    except Exception as e:
+        print(f"Error de conexión: {e}")
+        return None
     
 def scrap_jobs(token, ruta):
     headers = {

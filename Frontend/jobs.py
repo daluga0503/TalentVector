@@ -181,8 +181,10 @@ def show_jobs_page():
     
     with st.spinner('Cargando ofertas...'):
         jobs = get_jobs(token, ruta)
-        
-    if jobs:
+    
+    if jobs is None:
+        st.error("Hubo un problema de conexión con el servidor. Inténtalo de nuevo más tarde.")
+    elif len(jobs) > 0:
         st.write(f"Se han encontrado **{len(jobs)}** ofertas.")
         container_jobs(jobs)
     else:
