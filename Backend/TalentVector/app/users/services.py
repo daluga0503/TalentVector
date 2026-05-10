@@ -11,4 +11,3 @@ def register_user(validated_data):
 
 def get_all_users():
     return User.objects.all()
-

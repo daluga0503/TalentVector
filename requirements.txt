@@ -13,6 +13,8 @@
 #pandas
 #plotly
 #groq
+#pytest
+#pytest-django
 
 # Por instalar
 
