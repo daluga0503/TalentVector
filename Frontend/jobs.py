@@ -1,6 +1,9 @@
 import streamlit as st
-from services.jobs_service import get_jobs, url_jobs
+from services.jobs_service import get_jobs
 from services.favjobs_service import get_fav_jobs, add_job_to_fav, remove_job_from_fav
+from utils import load_config, get_token
+
+URL_JOBS = load_config()['URL_JOBS']
 
 
 def handle_fav_toggle(job_id, token):
@@ -140,7 +143,7 @@ def container_jobs(jobs):
                     card_job(jobs[i+1])
 
 def show_jobs_page():
-    token = st.session_state.get('access')
+    token = get_token()
     
     # 1. Cargar favoritos una sola vez (Estado Inicial)
     if 'fav_ids' not in st.session_state:

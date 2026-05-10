@@ -29,7 +29,7 @@ class InfoJobsScraper:
             
             # Gestionar cookies UNA SOLA VEZ
             try:
-                page.wait_for_selector('#didomi-notice-agree-button', timeout=8000)
+                page.wait_for_selector('#didomi-notice-agree-button', timeout=80000)
                 page.click('#didomi-notice-agree-button')
                 time.sleep(2)
             except:

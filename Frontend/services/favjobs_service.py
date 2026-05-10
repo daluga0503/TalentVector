@@ -1,5 +1,5 @@
 import requests
-from ...utils import load_config
+from utils import load_config
 
 url_favjobs = load_config()['URL_FAVJOBS']
 

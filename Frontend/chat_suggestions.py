@@ -1,6 +1,6 @@
 import streamlit as st
 from groq import Groq
-from ...utils import load_config
+from utils import load_config
 
 client = Groq(api_key=load_config()['GROQ_API_KEY'])
 

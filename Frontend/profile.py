@@ -1,12 +1,16 @@
 import streamlit as st
 from datetime import datetime
 from services.auth_service import logout, get_user_profile
+from utils import get_token, load_config
+from services.jobs_service import scrap_jobs
+
+URL_SCRAP_JOBS = load_config()['URL_SCRAP_JOBS']
 
 def show_profile_page():
     st.subheader("Información Personal")
     st.divider()
 
-    token = st.session_state.get("access")
+    token = get_token()
     if not token:
         st.error("No se ha encontrado una sesión activa. Pro favor, inicie sesión.")
         st.session_state["logged_in"] = False
@@ -30,6 +34,25 @@ def show_profile_page():
                     </div>
                 """, unsafe_allow_html=True)
                 st.write("")
+                if user_data.get('is_staff', False):
+                    scrap_btn = st.button('Scrapear ofertas de Infojobs', type='tertiary')
+                    if scrap_btn:
+                        with st.spinner("Scrapeando InfoJobs..."):
+                            resultado = scrap_jobs(token, URL_SCRAP_JOBS)
+                            
+                        if resultado:
+                            total = resultado.get('total_scrapped', 0)
+                            guardados = resultado.get('saved', 0)
+                            repetidos = resultado.get('skipped', 0)
+
+                            if guardados > 0:
+                                st.success(f"✅ ¡Éxito! Se encontraron {total} ofertas y se guardaron {guardados} nuevas.")
+                            elif repetidos > 0:
+                                st.warning(f"ℹ️ Scraping finalizado. Se encontraron {total} ofertas, pero todas ya estaban en la base de datos.")
+                            else:
+                                st.info("No se encontraron ofertas nuevas en esta búsqueda.")
+                        else:
+                            st.error("Ocurrió un error al conectar con el servidor de scraping.")
                 if st.button('Cerrar Sesión', type='primary'):
                     logout()
             with col2:

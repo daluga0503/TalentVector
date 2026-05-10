@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from services.jobs_service import get_jobs
-from utils import load_config
+from utils import load_config, get_token
 
-token = st.session_state.get('access')
+token = get_token()
 ruta = load_config()['URL_JOBS']
 jobs = get_jobs(token, ruta)
 df = pd.DataFrame(jobs)

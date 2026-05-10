@@ -2,6 +2,10 @@ import streamlit as st
 from login import show_login_page
 from register import show_register_page
 from jobs import show_jobs_page
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # 1. CONFIGURACIÓN INICIAL
 st.set_page_config(page_title="TalentVector", page_icon="💼", layout="centered")
