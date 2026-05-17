@@ -22,7 +22,7 @@ class JobOffer(Document):
     experience_required = StringField()
     seniority = StringField(choices = [(s.value, s.value) for s in Seniority], default=Seniority.JUNIOR.value)
     type_contract = StringField()
-    created_at = DateTimeField(default=datetime.now())
+    created_at = DateTimeField(default=datetime.now)
 
     meta = {
         "collection": "job_offers",

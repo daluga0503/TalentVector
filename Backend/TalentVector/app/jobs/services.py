@@ -1,4 +1,5 @@
 from .models import JobOffer
+from mongoengine.errors import ValidationError
 
 def create_job(data):
     job = JobOffer(**data)
@@ -21,16 +22,19 @@ def list_job(filters=None):
     return query.order_by("-created_at")
 
 def get_job(job_id):
-    return JobOffer.objects(id=job_id).first()
+    try:
+        return JobOffer.objects(id=job_id).first()
+    except ValidationError:
+        return None
 
 def update_job(job_id, data):
     job = get_job(job_id)
 
     if not job:
-        return 'La oferta con ese id no ha sido encontardo.'
+        return None
     
     for key, value in data.items():
-        setattr(key, value)
+        setattr(job, key, value)
 
     job.save()
     return job

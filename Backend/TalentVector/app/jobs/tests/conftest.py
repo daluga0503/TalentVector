@@ -9,8 +9,15 @@ from app.jobs.models import JobOffer
 
 @pytest.fixture(autouse=True, scope='function')
 def mongo_test_connection():
+    # Asegurar limpieza inicial
     mongoengine.disconnect_all()
-    mongoengine.connect('testdb', host='mongodb://localhost:27017/testdb')
+    conn = mongoengine.connect('testdb', host='mongodb://localhost:27017/testdb')
+    
+    # Forzar a Mongoengine a crear los índices únicos antes de los tests
+    JobOffer.ensure_indexes()
+    
     yield
-    JobOffer.drop_collection()
+    
+    # Al terminar el test, borramos la base de datos de pruebas completa
+    conn.drop_database('testdb')
     mongoengine.disconnect_all()

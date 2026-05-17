@@ -1,5 +1,6 @@
 import pytest
 from app.jobs.models import JobOffer
+from mongoengine.errors import NotUniqueError
 
 class TestJobModel:
 
@@ -18,6 +19,7 @@ class TestJobModel:
             seniority = "mid",
             type_contract = "indefinido"
         ).save()
+        
         assert job.title == "Full Stack Developer"
         assert job.company == "Tech Company"
         assert job.image == "https://example.com/logo.png"
@@ -46,7 +48,7 @@ class TestJobModel:
             seniority = "mid",
             type_contract = "indefinido"
         ).save()
-        with pytest.raises(Exception):
+        with pytest.raises(NotUniqueError):
             JobOffer(
                 title= "Full Stack Developer",
                 company = "Tech Company",

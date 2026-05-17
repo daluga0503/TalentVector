@@ -10,46 +10,43 @@ st.session_state.messages = [
 
 # Inicialización del estado de la sesión para almacenar la respuesta del modelo
 if 'response' not in st.session_state:
-    st.session_state.response = '¡Hola! Soy tu reclutador IT. ¿En qué puedo ayudarte?'
+    st.session_state.response = '¡Hola! Soy tu mentor tecnológico. ¿En qué puedo ayudarte?'
 
 # Configuración de la página
-st.set_page_config(page_title="IT Recruiter AI", page_icon="💼")
+st.set_page_config(page_title="TechMentor AI", page_icon="💼")
 
-st.title('💼 IT Specialist Recruiter Chat')
+st.title('💼 TechMentor Chat')
 st.markdown("Optimiza tu perfil técnico y prepárate para entrevistas con IA.")
 
-# Formulario para enviar mensajes al chatbot
-with st.form(key="chat_form"):
-    st.markdown("#### Escribe tu mensaje")
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        user_input = st.text_input(
-            label="Escribe tu mensaje",
-            placeholder="¿Cómo optimizo mi CV para AI Engineer",
-            icon="✍️",
-            label_visibility="collapsed"
-        )
-    with col2:
-        submit_button = st.form_submit_button("Enviar", use_container_width=True)
+user_input = st.chat_input("¿Cómo optimizo mi CV para AI Engineer?")
 
-if submit_button:
-    if user_input != "":
-        with st.spinner("Generando respuesta..."):
+# 4. Lógica de procesamiento (Solo si hay input real)
+if user_input: # Esto filtra None y strings vacíos automáticamente
+    # Añadimos el mensaje del usuario al historial
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    
+    with st.spinner("Generando respuesta..."):
+        try:
             completion = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
-                messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages + [{"role": "user", "content": user_input}]],
+                # Enviamos todo el historial para que tenga contexto
+                messages=st.session_state.messages,
             )
 
             answer = completion.choices[0].message.content
             st.session_state.response = answer
+            # Añadimos la respuesta al historial para mantener el contexto
             st.session_state.messages.append({"role": "assistant", "content": answer})
-    else:
-        st.error("Por favor, completa todos los campos antes de enviar el mensaje.")
+        
+        except Exception as e:
+            st.error(f"Error al conectar con Groq: {e}")
 
+# 5. Visualización de la respuesta
+# Usamos un contenedor para que el formato sea limpio
 formatted_response = st.session_state.response.replace('\n', '<br>')
 st.markdown(
     f"""
-    <div style="background-color:#f6f6f6; border-radius:10px; padding:20px; margin-top:20px; border:1px solid #e3e3e3;">
+    <div style="background-color:#f6f6f6; border-radius:10px; padding:20px; margin-top:20px; border:1px solid #e3e3e3; color: #111;">
     <b>Chatbot:</b><br>
     {formatted_response}
     </div>
